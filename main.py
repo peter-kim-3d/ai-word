@@ -19,21 +19,25 @@ def get_frequent_words(letter, count):
 
 def get_word_definition(word):
     """Fetch the definition of a word using langchain."""
-    # Mock-up; replace with actual method call
-    response = chat_model.predict(f"What is the definition of {word}?")
+    response = chat_model.predict(f"What is the simple definition of {word}?")
     return response
 
 if len(letter) == 1:
     if st.button('Generate Words'):
         with st.spinner('Fetching words...'):
             words = get_frequent_words(letter, count)
-            
-            for word in words:
-                col1, col2 = st.beta_columns(2)
-                col1.write(word)
-                if col2.button(f"Meaning of {word}"):
+            st.session_state.words_list = [word.split('. ')[1] for word in words.split('\n')]
+
+    if 'words_list' in st.session_state:
+        for idx, word in enumerate(st.session_state.words_list):
+            col1, col2 = st.columns(2)
+            col1.write(word)
+            if col2.button(f"Meaning of {word}", key=f"btn_{idx}"):
+                with st.spinner(f"Fetching meaning of {word}..."):
                     definition = get_word_definition(word)
-                    st.write(f"Definition of {word}: {definition}")
+                    st.session_state.definition = definition
+                st.write(f"Definition of {word}: {st.session_state.definition}")
+
 else:
     st.write("Please input a single letter.")
 
