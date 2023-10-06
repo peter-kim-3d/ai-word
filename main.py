@@ -31,7 +31,7 @@ if len(letter) == 1:
     if 'words_list' in st.session_state:
         for idx, word in enumerate(st.session_state.words_list):
             col1, col2 = st.columns(2)
-            col1.write(word)
+            col1.write(str(idx+1) + "." + word)
             if col2.button(f"Meaning of {word}", key=f"btn_{idx}"):
                 with st.spinner(f"Fetching meaning of {word}..."):
                     definition = get_word_definition(word)
